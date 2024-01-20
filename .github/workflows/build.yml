@@ -221,11 +221,13 @@ jobs:
         sdl2: [ON]
         include:
           - arch: Win32
-            obzip: https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.25/OpenBLAS-0.3.25-x86.zip
+            obzip: https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.26/OpenBLAS-0.3.26-x86.zip
+            obdir: win32
             s2arc: x86
             clblast: OFF
           - arch: x64
-            obzip: https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.25/OpenBLAS-0.3.25-x64.zip
+            obzip: https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.26/OpenBLAS-0.3.26-x64-64.zip
+            obdir: win64-64
             s2arc: x64
             clblast: ON
             clver: 1.6.1
@@ -243,10 +245,10 @@ jobs:
         if: matrix.blas == 'ON'
         run: |
           C:/msys64/usr/bin/wget.exe -qO blas.zip ${{ matrix.obzip }}
-          7z x blas.zip -oblas -y
-          copy blas/include/cblas.h .
-          copy blas/include/openblas_config.h .
-          echo "OPENBLAS_PATH=$env:GITHUB_WORKSPACE/blas" >> $env:GITHUB_ENV
+          7z x blas.zip -o${{ matrix.obdir }} -y
+          copy ${{ matrix.obdir }}/include/cblas.h .
+          copy ${{ matrix.obdir }}/include/openblas_config.h .
+          echo "OPENBLAS_PATH=$env:GITHUB_WORKSPACE/${{ matrix.obdir }}" >> $env:GITHUB_ENV
 
       - name: Fetch SDL2 and set SDL2_DIR
         if: matrix.sdl2 == 'ON'
